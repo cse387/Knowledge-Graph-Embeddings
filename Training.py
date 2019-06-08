@@ -15,32 +15,23 @@ class Embbed_Projection(Projection):
     
   def call(self, x):
       x=tf.reshape(x,shape=(x.shape[0],1))
-      Zu=tf.matmul(self.Z,x)/(self.m)#+0.000001*tf.matmul(self.Z,x)/(self.m)
+      Zu=tf.matmul(self.Z,x)/(self.m)
       P=tf.matmul(self.P,Zu)
-      #P=P+0.001*P
       ret=tf.matmul(P,Zu,transpose_a=True)/(tf.norm(P)*tf.norm(Zu))
-      return ret#+0.0000001*ret
+      return ret
 
 class Embbed_Intersection(Intersection):
     def __init__(self,d,output_shape,input_shape): 
       Intersection.__init__(self,d,output_shape)
       self.Z = tf.Variable(tf.random_normal(shape=(d,input_shape)))
       self.m=input_shape
-      #self.NN=tf.Variable(tf.random_normal(shape=(d,output_shape)))
-      #self.bias=tf.Variable(tf.random_normal(shape=(1,output_shape)))
     
     def call(self, x):
-        #x=feature,embedings
-        #q=tf.reshape(q,shape=(1,q.shape[0]))
         Zu=tf.matmul(self.Z,tf.transpose(x))/self.m
         Zu=tf.transpose(Zu)
-        B=tf.reduce_mean(self.NN(Zu))#tf.nn.relu(tf.matmul(x,self.NN)+self.bias))
-        #B Vector or scalar ?
-        print(self.NN(Zu))
-        print(B,'---',self.W.shape)
+        B=tf.reduce_mean(self.NN(Zu))
         B=self.W*B
-        print(B.shape)
-        return tf.matmul(tf.transpose(B),tf.transpose(Zu))/tf.norm(Zu)*tf.norm(B)#*Zu/tf.norm(Zu)
+        return tf.matmul(tf.transpose(B),tf.transpose(Zu))/tf.norm(Zu)*tf.norm(B)
 
 
 class Train():
@@ -183,9 +174,6 @@ class Train():
         print("Epoch {:03d}: Avg_Train_Loss: {:.3f} : Avg_Val_Loss:{:.3f} ".format(epoch,epoch_loss_avg.result()
                                                                    ,epoch_val_avg.result()))
         print('Accuracy=',self.Accuracy(model,val_neg_,val_pos_))
-        #if np.abs(train_loss_results[epoch]-val_loss_results[epoch])>0.2:
-        #  print(False)
-        #  break
     self.Intersection=model
     
 if __name__=='__main__':
