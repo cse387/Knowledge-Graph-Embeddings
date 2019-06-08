@@ -6,7 +6,6 @@ class Projection(tf.keras.Model):
       self.P = tf.Variable(tf.random_normal(shape=(d,d)))
     
   def call(self, q):
-    #q shape=(d,1)
     if len(q.shape)==1:
       q=tf.reshape(q,shape=(1,q.shape[0]))
     P=tf.matmul(self.P,tf.transpose(q))
@@ -24,24 +23,14 @@ class Intersection(tf.keras.Model):
       seq.add(dense)
       seq.add(dropout)
       self.NN=seq
-      #self.NN=tf.Variable(tf.random_normal(shape=(d,output_shape)))
-      #self.bias=tf.Variable(tf.random_normal(shape=(1,output_shape)))
     
     def call(self, q):
-        #x=feature,embedings
         if len(q.shape)==1:
           q=tf.reshape(q,shape=(1,q.shape[0]))
-        #print(q.shape)
         q=tf.reshape(q,(q.shape[0],q.shape[1]))
-        B=tf.reduce_mean(self.NN(q),axis=0)#axis=1
-        
-        #tf.nn.relu(tf.matmul(x,self.NN)+self.bias))
-        #B Vector or scalar ?
-        #print(B,'---',self.W.shape)
-        #print(B.shape)  
+        B=tf.reduce_mean(self.NN(q),axis=0)
         B=tf.matmul(self.W,tf.reshape(B,shape=(B.shape[0],1)))
-        #print('shape==',B.shape)
-        B=tf.matmul(tf.transpose(B),tf.transpose(q))/tf.norm(B)*tf.norm(q)#*Zu/tf.norm(Zu)
+        B=tf.matmul(tf.transpose(B),tf.transpose(q))/tf.norm(B)*tf.norm(q)
         return tf.transpose(B)
 
     def evaluate(self,q):
