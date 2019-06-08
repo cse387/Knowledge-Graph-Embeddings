@@ -20,8 +20,6 @@ def Visualize_querytype2(query,aproximation,groud_truth):
                        ))
     plt.figure()
     Ground_Truth=nx.Graph()
-    #pos_Ground_Truth={'A':[0.3,0.5],'C':[0.3,0.3],'G':[0.3,0.1]}
-    #pos_Nearest_Answers={'A':[0.45,0.5],'F':[0.45,0.3],'G':[0.45,0.1]}
     Ground_Truth.add_nodes_from(groud_truth)
 
     pos_Ground_Truth={}
